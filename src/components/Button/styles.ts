@@ -1,17 +1,19 @@
 import styled from 'styled-components'
+import { cores } from '../../styles'
 import { Link } from 'react-router-dom'
 
-import { cores } from '../../styles'
+import { Props } from '.'
 
-export const Botao = styled(Link)`
-  background-color: ${cores.rosa_escuro};
-  color: ${cores.rosa_claro};
-  font-size: 14px;
-  font-weight: 700;
-  padding: 4px 6px;
-  text-align: center;
-  margin: 8px;
-  border: none;
-  cursor: pointer;
+export const BotaoContainer = styled(Link)<Props>`
+  background-color: ${cores.vermelho};
+  color: ${cores.rosa};
   text-decoration: none;
+  font-size: ${(props) => (props.type === 'link' ? '14px' : '12px')};
+  cursor: ${(props) => (props.type === 'link' ? 'pointer' : 'default')};
+  margin-top: 16px;
+  margin-bottom: 8px;
+  margin-left: 8px;
+  padding: 6px 4px;
+  font-weight: bold;
+  display: inline-block;
 `

@@ -1,35 +1,27 @@
 import styled from 'styled-components'
-import { breakpoints, cores } from '../../styles'
+import { cores } from '../../styles'
 
-export const Container = styled.footer`
-  background-color: ${cores.rosa_claro};
-  padding: 40px 444px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 120px;
+export const FooterStyle = styled.footer`
+  background-color: ${cores.rosa};
+  text-align: center;
+  height: 298px;
+`
+export const Branding = styled.img`
+  width: 125px;
+  height: 57.5px;
+  margin-top: 40px;
+`
 
-  @media (max-width: ${breakpoints.tablet}) {
-    display: none;
+export const SocialMedia = styled.div`
+  margin-top: 32.5px;
+  img {
+    margin-right: 8px;
   }
 `
-
-export const Logo = styled.img`
-  margin-bottom: 32.5px;
-`
-
-export const Links = styled.ul`
-  display: flex;
-  margin-bottom: 80px;
-`
-
-export const Link = styled.a`
-  margin-right: 8px;
-`
-
-export const Descricao = styled.p`
-  color: ${cores.rosa_escuro};
-  font-weight: 400;
+export const Disclaimer = styled.p`
+  margin: 80px auto;
+  max-width: 480px;
+  width: 100%;
   font-size: 10px;
-  text-align: center;
+  font-weight: regular;
 `

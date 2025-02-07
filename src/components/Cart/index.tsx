@@ -1,70 +1,72 @@
-import { Botao } from '../Dishes/styles'
-
+import { useDispatch, useSelector } from 'react-redux'
 import {
   Overlay,
   CartContainer,
-  SideBar,
-  Prices,
-  Total,
-  CartItem
-} from './styles'
-import { useDispatch, useSelector } from 'react-redux'
+  AddCartButton,
+  Sidebar,
+  ItemCart,
+  ImageItem,
+  InfosItem,
+  DeleteItemButton,
+  InfosCart,
+  CartStage
+} from './style'
 import { RootReducer } from '../../store'
-import { close, remove } from '../../store/reducers/cart'
+import { close, removeItem, startCheckout } from '../../store/reducers/cart'
+import { priceFormat } from '../FoodList'
+import Checkout from '../Checkout'
 
 const Cart = () => {
-  const { isOpen, items } = useSelector((state: RootReducer) => state.cart)
-
+  const { isOpen, pedido, isAddress, isCart } = useSelector(
+    (state: RootReducer) => state.cart
+  )
   const dispatch = useDispatch()
-
-  const closeCart = () => {
+  const openCart = () => {
     dispatch(close())
+  }
+  const activeCheckout = () => {
+    if (getTotalPrice() > 0) {
+      dispatch(startCheckout())
+    } else {
+      alert('Não há itens no carrinho')
+    }
   }
 
   const getTotalPrice = () => {
-    return items.reduce((acumulador, valorAtual) => {
-      return (acumulador += valorAtual.preco)
+    return pedido.reduce((acumulator, actualValue) => {
+      return (acumulator += actualValue.preco)
     }, 0)
   }
-
-  const removeItem = (id: number) => {
-    dispatch(remove(id))
+  const remItem = (id: number) => {
+    dispatch(removeItem(id))
   }
-
   return (
     <CartContainer className={isOpen ? 'is-open' : ''}>
-      <Overlay onClick={closeCart} />
-      <SideBar>
-        <ul>
-          {items.map((item) => (
-            <CartItem key={item.id}>
-              <img src={item.foto} />
-              <div>
-                <h3>{item.nome}</h3>
-                <span>
-                  {' '}
-                  {new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL'
-                  }).format(item.preco)}
-                </span>
-              </div>
-              <button onClick={() => removeItem(item.id)} type="button" />
-            </CartItem>
-          ))}
-        </ul>
-        <Total>
-          <Prices>Valor total</Prices>
-          <Prices>
-            {' '}
-            {new Intl.NumberFormat('pt-BR', {
-              style: 'currency',
-              currency: 'BRL'
-            }).format(getTotalPrice())}
-          </Prices>
-        </Total>
-        <Botao>Continuar com a entrega</Botao>
-      </SideBar>
+      <Overlay onClick={openCart} />
+      <Sidebar>
+        <CartStage className={!isCart ? 'is-checkout' : ''}>
+          <ul>
+            {pedido.map((p) => (
+              <ItemCart key={p.id}>
+                <ImageItem src={p.foto} alt="" />
+                <InfosItem>
+                  <h3>{p.nome}</h3>
+                  <span>{priceFormat(p.preco)}</span>
+                </InfosItem>
+                <DeleteItemButton type="button" onClick={() => remItem(p.id)} />
+              </ItemCart>
+            ))}
+          </ul>
+          <InfosCart>
+            <p>Valor total</p>
+            <span>{priceFormat(getTotalPrice())}</span>
+          </InfosCart>
+          <AddCartButton onClick={activeCheckout}>
+            Continuar com a entrega
+          </AddCartButton>
+        </CartStage>
+        <Checkout checkoutStart={isAddress} priceTotal={getTotalPrice()} />
+      </Sidebar>
     </CartContainer>
   )
 }

@@ -1,44 +1,40 @@
 import { useParams } from 'react-router-dom'
-import DishesList from '../../components/DishesList'
-import HeaderPerfil from '../../components/HeaderPerfil'
-
-import Banner from '../../components/Banner'
-import { useGetDishQuery } from '../../services/api'
+import Header from '../../components/Header'
+import Apresentacao from '../../components/Apresentacao'
+import FoodList from '../../components/FoodList'
+import Footer from '../../components/Footer'
+import { useGetRestaurantSelectedQuery } from '../../services/api'
 import Cart from '../../components/Cart'
+import Loader from '../../components/Loader'
 
-// export type Props = {
-//   restaurants: Restaurante[]
-// }
+type RestaurantParams = {
+  id: string
+}
 
 const Perfil = () => {
-  const { id } = useParams()
-  const { data: restaurante } = useGetDishQuery(id!)
+  const { id } = useParams() as RestaurantParams
+  const { data: restaurantFood } = useGetRestaurantSelectedQuery(id)
 
-  // const [restaurante, setRestaurante] = useState<Restaurante | null>(null)
-
-  // useEffect(() => {
-  //   fetch(`https://fake-api-tau.vercel.app/api/efood/restaurantes/${id}`)
-  //     .then((res) => res.json())
-  //     .then((res) => setRestaurante(res))
-  //     .catch((err) => console.error('Erro ao carregar cardápio:', err))
-  // }, [id])
-
-  if (!restaurante) {
-    return <p>Carregando...</p>
+  if (restaurantFood) {
+    return (
+      <>
+        <Header />
+        <Apresentacao restaurant={restaurantFood} />
+        <FoodList
+          restaurant={restaurantFood}
+          pedido={{
+            id: 0,
+            nome: '',
+            foto: '',
+            preco: 0
+          }}
+        />
+        <Footer />
+        <Cart />
+      </>
+    )
   }
-
-  return (
-    <>
-      <HeaderPerfil />
-      <Banner
-        capa={restaurante.capa}
-        title={restaurante.titulo}
-        tipo={restaurante.tipo}
-      />
-      <DishesList restaurants={[restaurante]} />
-      <Cart />
-    </>
-  )
+  return <Loader />
 }
 
 export default Perfil
